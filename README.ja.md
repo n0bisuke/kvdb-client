@@ -10,14 +10,73 @@ npm install kvdb-client
 
 ## クイックスタート
 
+### 1) バケット作成サンプル
+
 ```js
 import { KVdbClient } from "kvdb-client";
 
-const kv = new KVdbClient({ bucket: "YOUR_BUCKET" });
+const email = process.env.KVDB_EMAIL; // 自分のメール
+
+if (!email) {
+  throw new Error("KVDB_EMAIL is required");
+}
+
+const bucket = await KVdbClient.createBucket(email);
+console.log("bucket:", bucket);
+```
+
+メールドレスを指定して実行するだけでバケットが作成できます。
+
+### 2) データの出し入れサンプル
+
+```js
+import { KVdbClient } from "kvdb-client";
+
+const bucket = process.env.KVDB_BUCKET; // 作成したバケットのID
+const token = process.env.KVDB_TOKEN; // （なくてOK 任意）
+
+if (!bucket) {
+  throw new Error("KVDB_BUCKET is required");
+}
+
+const kv = new KVdbClient({ bucket, token });
 
 await kv.set("myName", "n0bisuke");
 const name = await kv.get("myName");
-console.log(name);
+console.log("myName:", name);
+
+await kv.set("myData", { name: "test", value: 123 }, { json: true });
+const data = await kv.get("myData", { parseJson: true });
+console.log("myData:", data);
+
+const keys = await kv.list();
+console.log("keys:", keys);
+```
+
+この辺は公式にもあるのでお好きな方をどうぞ。
+
+### 3) データ操作のトランザクションサンプル
+
+公式になかったトランザクションです。まとめて処理したいときに便利です。
+
+```js
+import { KVdbClient } from "kvdb-client";
+
+const bucket = process.env.KVDB_BUCKET;
+const token = process.env.KVDB_TOKEN; // （なくてOK 任意）
+
+if (!bucket) {
+  throw new Error("KVDB_BUCKET is required");
+}
+
+const kv = new KVdbClient({ bucket, token });
+
+await kv.transaction([
+  { set: "users:email:new@example.com", value: "user 1" },
+  { delete: "users:email:old@example.com" }
+]);
+
+console.log("transaction done");
 ```
 
 ## 認証
@@ -140,7 +199,12 @@ await kv.deleteBucket();
 - `token` は `curl -u 'token:'` と同じ形式で送信されます。
 - KVdb に保存した情報がどのように扱われるかについて、SDK 開発者（n0bisuke）は一切把握していません。利用は自己責任とし、トラブル等について開発者は責任を負いません。
 
+## 参考記事
+
+- `https://qiita.com/n0bisuke/items/540478c314a09ee14ba9`
+
 ## Language
 
 - English: `README.md`
 - Japanese (this file)
+- English (GitHub): `https://github.com/n0bisuke/kvdb-client/blob/main/README.md`

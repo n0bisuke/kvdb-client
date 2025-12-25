@@ -10,14 +10,69 @@ npm install kvdb-client
 
 ## Quick Start
 
+### 1) Create a bucket
+
 ```js
 import { KVdbClient } from "kvdb-client";
 
-const kv = new KVdbClient({ bucket: "YOUR_BUCKET" });
+const email = process.env.KVDB_EMAIL; // your email
+
+if (!email) {
+  throw new Error("KVDB_EMAIL is required");
+}
+
+const bucket = await KVdbClient.createBucket(email);
+console.log("bucket:", bucket);
+```
+
+You can create a bucket just by providing an email address.
+
+### 2) Read & write data
+
+```js
+import { KVdbClient } from "kvdb-client";
+
+const bucket = process.env.KVDB_BUCKET; // your bucket id
+const token = process.env.KVDB_TOKEN; // optional
+
+if (!bucket) {
+  throw new Error("KVDB_BUCKET is required");
+}
+
+const kv = new KVdbClient({ bucket, token });
 
 await kv.set("myName", "n0bisuke");
 const name = await kv.get("myName");
-console.log(name);
+console.log("myName:", name);
+
+await kv.set("myData", { name: "test", value: 123 }, { json: true });
+const data = await kv.get("myData", { parseJson: true });
+console.log("myData:", data);
+
+const keys = await kv.list();
+console.log("keys:", keys);
+```
+
+### 3) Transaction (batch operations)
+
+```js
+import { KVdbClient } from "kvdb-client";
+
+const bucket = process.env.KVDB_BUCKET;
+const token = process.env.KVDB_TOKEN; // optional
+
+if (!bucket) {
+  throw new Error("KVDB_BUCKET is required");
+}
+
+const kv = new KVdbClient({ bucket, token });
+
+await kv.transaction([
+  { set: "users:email:new@example.com", value: "user 1" },
+  { delete: "users:email:old@example.com" }
+]);
+
+console.log("transaction done");
 ```
 
 ## Authentication
@@ -140,7 +195,12 @@ await kv.deleteBucket();
 - `token` for Basic auth is sent as `curl -u 'token:'`.
 - The SDK author (n0bisuke) has no knowledge of how data stored in KVdb is handled; use at your own risk. The author is not responsible for any issues or damages.
 
+## Related Article
+
+- `https://qiita.com/n0bisuke/items/540478c314a09ee14ba9`
+
 ## Language
 
 - English (this file)
 - Japanese: `README.ja.md`
+- Japanese (GitHub): `https://github.com/n0bisuke/kvdb-client/blob/main/README.ja.md`
