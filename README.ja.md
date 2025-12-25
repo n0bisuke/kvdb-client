@@ -1,6 +1,6 @@
 # kvdb-client
 
-KVdb.io 用のシンプルな Node.js クライアントです。
+KVdb.io 用のシンプルな Node.js クライアントです。サードパーティーによる非公式 SDK です。
 
 ## インストール
 

@@ -1,6 +1,6 @@
 # kvdb-client
 
-A simple Node.js client for KVdb.io.
+A simple Node.js client for KVdb.io. This is a third-party, unofficial SDK.
 
 ## Install
 
