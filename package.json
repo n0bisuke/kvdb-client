@@ -1,0 +1,22 @@
+{
+  "name": "kvdb-client",
+  "version": "0.1.0",
+  "description": "Simple Node.js client for kvdb.io",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "kvdb",
+    "kvdb.io",
+    "key-value",
+    "sdk",
+    "node"
+  ],
+  "license": "MIT"
+}

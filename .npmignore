@@ -1,0 +1,18 @@
+.DS_Store
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tgz
+
+# playground and local experiments
+playground/
+examples/
+
+# local tooling
+.vscode/
+.idea/
+
+# misc
+.env
+.env.*
